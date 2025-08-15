@@ -1,7 +1,7 @@
 # imports
-from src.functions.get_articles import get_articles
-from src.functions.transform_articles import transform_articles
-from src.functions.write_articles import write_articles
+from functions.get_articles import get_articles
+from functions.transform_articles import transform_articles
+from functions.write_articles import write_articles
 
 def main():
     # get all the txt files from the input folder
