@@ -1,0 +1,6 @@
+# ignore the scratch file
+scratch.md
+
+# ignore the caches
+__pycache__/
+
