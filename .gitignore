@@ -4,3 +4,8 @@ scratch.md
 # ignore the caches
 __pycache__/
 
+# ignore .venv/
+.venv/
+
+# ignore output
+output/
