@@ -1,3 +1,8 @@
 PATH_TO_INPUTS = "input"
 PATH_TO_TRANSFORMS = "transforms"
 PATH_TO_OUTPUT = "output"
+
+SOFT_CLUSTER_SCORE = 0.6
+HARD_CLUSTER_SCORE = 0.8
+SOFT_CLUSTER_KEY = "soft_cluster"
+HARD_CLUSTER_KEY = "hard_cluster"

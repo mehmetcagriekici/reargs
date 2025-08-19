@@ -17,9 +17,6 @@ And this is the end of the paragraph."""
             """And this is the end of the paragraph."""
         ]
 
-        print(chunk_sentences(paragraph))
-        print(result)
-
         self.assertListEqual(chunk_sentences(paragraph), result)
 
 if __name__ == "__main__":
