@@ -10,6 +10,8 @@ from utils.get_clusters import get_clusters
 def transform_article():
     # inform the user
     print("Running Sentence Transformers...")
+    # store records
+    records = {}
 
     # store similarities inside the paragraph with unique id
     similarities_paragraphs = {}
@@ -37,8 +39,12 @@ def transform_article():
                 similarities_paragraphs[paragraph_id] = paragraph_clusters
         # increase the paragraph index
         i += 1
+
+        # re-write the reduced article into the transforms folder after each reduce
         
-        # re-write the article inside the transforms folder
+        # write a records file inside output after transform is complete 
+
+    print("Transformation is complete! Your output is ready inside the outputs folder.")      
 
     print(similarities_paragraphs)
     

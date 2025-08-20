@@ -1,38 +1,67 @@
 # ReArgs
 
-**ReArgs (not “regards”)** is a tool to help you **re-polish** or better understand an article or text.  
+**ReArgs (not “regards”)** is a command-line Python application that analyzes `.txt` files for semantic repetitions and similarities.
+It does **not** rewrite your text for you—it simply helps you **visualize and organize** your writing by highlighting repetitions and grouping similar content.
 
-It works by:  
-- Grouping paragraphs in a text.  
-- Checking each sentence within a paragraph and grouping them according to their meaning using [sentence-transformers](https://github.com/UKPLab/sentence-transformers?tab=readme-ov-file).  
-- Then grouping paragraphs in the same way.  
+---
 
-This allows you to:  
-- Spot logic repetitions in your writing.  
-- Reorganize your text to make it **clearer, more concise, and easier to read**.  
-- Quickly see what an article or each paragraph is about.  
+## ✨ Motivation
 
-**Usage Instructions**
+I enjoy writing posts and articles (often on Reddit), but I noticed a recurring problem:
+my drafts quickly turned into a mess because of poor planning and constant repetition.
 
-1. **Prepare your files**
-   Place your `.txt` files directly inside the `input` folder.
+Reading an entire article multiple times to catch repetitions was frustrating, so I built **ReArgs** to automatically surface these similarities.
+It helps me:
 
-   > *Note:* The script does **not** check nested folders—files must be in `input` itself.
+* Write **cleaner articles** by avoiding unintentional repetition.
+* **Understand other articles** better by grouping sentences and paragraphs with similar meaning.
 
-2. **Run the program**
-   Execute the shell script:
+---
 
-   ```bash
-   ./run.sh
-   ```
+## 🚀 How to Use
 
-3. **How it works**
+Run the provided shell script with a `.txt` file as an argument:
 
-   * The `get_files` function will copy your `.txt` files into the `transforms` folder.
-   * The `transforms` folder is where all processing happens—**do not modify** its contents manually.
-   * Your original files remain untouched.
+```bash
+./run.sh path/to/article.txt
+```
 
-4. **Output**
-   Once processing is complete, the finalized files will appear in the `output` folder.
+### Notes
 
+* The application only accepts **one `.txt` file at a time**.
+* Your original file is never modified.
+* Results are displayed in the console and also written to the `output/` folder.
+* The `transforms/` folder is used internally—do not manually modify its contents.
 
+---
+
+## ⚙️ How It Works
+
+1. The application copies the input file into the `transforms/` folder.
+2. It splits the article into **paragraphs** and **sentences**.
+3. Using [Sentence Transformers](https://github.com/UKPLab/sentence-transformers), it:
+
+   * Finds semantic similarities within each paragraph.
+   * Reduces repetitive sentences.
+   * Then checks similarities **across the entire article**.
+
+### Similarity Clusters
+
+* **Hard clusters (≥ 0.8 similarity):** treated as duplicates.
+* **Soft clusters (0.6–0.8 similarity):** treated as sentences with close meaning.
+
+The application reduces paragraphs accordingly, re-writes the intermediate file in `transforms/`, and keeps a detailed log of all operations.
+Finally:
+
+* A **similarity graph** and grouped results are printed to the console.
+* A summary report is written to the `output/` folder.
+
+⚠️ While the reduced article remains in the `transforms/` folder, it’s **not intended for direct use** as a new article.
+The purpose is to highlight repetitions, not to automatically generate polished text.
+
+---
+
+## 📌 Disclaimer
+
+ReArgs is a **writing assistant**, not an article generator.
+It is designed to **help you improve your own writing** by making patterns more visible.
