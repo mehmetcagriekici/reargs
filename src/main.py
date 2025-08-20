@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import uuid
 
 from fastapi import FastAPI, UploadFile, HTTPException
@@ -119,3 +120,20 @@ async def post_similarities_llm(id: str, clusters: LLMRequest) -> LLMResponse:
         "id": id,
         "clusters": clusters,
     }
+=======
+import sys
+
+from functions.get_article import get_article
+from functions.transform_article import transform_article
+from functions.write_article import write_article
+
+def main():    
+    # get the article file
+    get_article(sys.argv)
+    # transform the file contents
+    transform_article()
+    # write the new file into the output folder
+    write_article()
+    
+main()
+>>>>>>> efeec18 (get files changes before transformer implementation, app now works with 1 single txt file)
