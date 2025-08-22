@@ -3,3 +3,6 @@ __pycache__/
 
 # ignore .venv/
 .venv/
+
+# ignore transforms folder
+transforms/
