@@ -16,7 +16,7 @@ class TestsGetClusters(unittest.TestCase):
     "The new movie is so great",
     "A woman watches TV",
 ]
-        self.assertDictEqual({f'{SOFT_CLUSTER_KEY}__[0, 1]': [0, 1], f'{HARD_CLUSTER_KEY}__[3, 7]': [3, 7]}, get_clusters(sentences) )
+        self.assertDictEqual({f'{SOFT_CLUSTER_KEY}__(0, 1)': (0, 1), f'{HARD_CLUSTER_KEY}__(3, 7)': (3, 7)}, get_clusters(sentences) )
 
 
 if __name__ == "__main__":

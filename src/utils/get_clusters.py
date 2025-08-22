@@ -22,13 +22,14 @@ def get_clusters(sentences):
         for j in range(i + 1, len(similarities)):
             # hard cluster
             if similarities[i][j] >= HARD_CLUSTER_SCORE:
-                clusters[f"{HARD_CLUSTER_KEY}__[{i}, {j}]"] = [i, j]
+                clusters[f"{HARD_CLUSTER_KEY}__({i}, {j})"] = (i, j)
                 continue
             # soft cluster
             if similarities[i][j] >= SOFT_CLUSTER_SCORE:
-                clusters[f"{SOFT_CLUSTER_KEY}__[{i}, {j}]"] = [i, j]
+                clusters[f"{SOFT_CLUSTER_KEY}__({i}, {j})"] = (i, j)
                 continue
     
     return clusters
             
     
+
