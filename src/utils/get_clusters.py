@@ -1,12 +1,16 @@
 from sentence_transformers import SentenceTransformer
 
-from utils.constants import SOFT_CLUSTER_SCORE, HARD_CLUSTER_SCORE, HARD_CLUSTER_KEY, SOFT_CLUSTER_KEY
+from utils.constants import HARD_CLUSTER_KEY, SOFT_CLUSTER_KEY
 
 # Load a pretrained Sentence Transformer model
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("all-mpnet-base-v2")
 
 # takes an array of sentences
-def get_clusters(sentences):
+# sentence level bool
+def get_clusters(sentences, is_sentence_level=False):
+    soft_cluster_score = 0.6 if is_sentence_level else 0.7
+    hard_cluster_score = 0.8 if is_sentence_level else 0.85
+
     # store cluster indexes (hard/soft)
     clusters = {}
     
@@ -21,11 +25,11 @@ def get_clusters(sentences):
         # check the similarity scores on the right side
         for j in range(i + 1, len(similarities)):
             # hard cluster
-            if similarities[i][j] >= HARD_CLUSTER_SCORE:
+            if similarities[i][j] >= hard_cluster_score:
                 clusters[f"{HARD_CLUSTER_KEY}__({i}, {j})"] = (i, j)
                 continue
-            # soft cluster
-            if similarities[i][j] >= SOFT_CLUSTER_SCORE:
+            # soft cluster / paragraph level
+            if similarities[i][j] >= soft_cluster_score:
                 clusters[f"{SOFT_CLUSTER_KEY}__({i}, {j})"] = (i, j)
                 continue
     

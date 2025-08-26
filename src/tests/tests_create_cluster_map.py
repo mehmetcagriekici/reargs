@@ -16,7 +16,7 @@ class TestsCreateClusterMap(unittest.TestCase):
             "p_0__0": {
                 "cluster_type": "soft_cluster",
                 "cluster_sentences": ["s0", "s1", "s2"],
-                "reduced": "s0"
+                "cluster_indexes": [0, 1, 2]
             }
         }
 
@@ -34,11 +34,11 @@ class TestsCreateClusterMap(unittest.TestCase):
             "p_1__0": {
                 "cluster_type": "soft_cluster",
                 "cluster_sentences": ["s0", "s1"],
-                "reduced": "s0",
+                "cluster_indexes": [0, 1],
                 "sub_cluster--(0, 2)": {
                     "cluster_type": "hard_cluster",
                     "cluster_sentences": ["s0", "s2"],
-                    "reduced": "s0"
+                    "cluster_indexes": [0, 2]
                 }
             }
         }
@@ -57,7 +57,7 @@ class TestsCreateClusterMap(unittest.TestCase):
             "p_2__0": {
                 "cluster_type": "soft_cluster",
                 "cluster_sentences": ["s0", "s1", "s2"],
-                "reduced": "s0"
+                "cluster_indexes": [0, 1, 2]
             }
         }
 
@@ -75,7 +75,7 @@ class TestsCreateClusterMap(unittest.TestCase):
             "p_3__0": {
                 "cluster_type": "hard_cluster",
                 "cluster_sentences": ["s0", "s1"],
-                "reduced": "s0"
+                "cluster_indexes": [0, 1]
             }
         }
         

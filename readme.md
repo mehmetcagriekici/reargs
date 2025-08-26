@@ -42,7 +42,6 @@ Run the provided shell script with a `.txt` file as an argument:
 3. Using [Sentence Transformers](https://github.com/UKPLab/sentence-transformers), it:
 
    * Finds semantic similarities within each paragraph.
-   * Reduces repetitive sentences.
    * Then checks similarities **across the entire article**.
 
 ### Similarity Clusters
@@ -50,14 +49,13 @@ Run the provided shell script with a `.txt` file as an argument:
 * **Hard clusters (≥ 0.8 similarity):** treated as duplicates.
 * **Soft clusters (0.6–0.8 similarity):** treated as sentences with close meaning.
 
-The application reduces paragraphs accordingly, re-writes the intermediate file in `transforms/`, and keeps a detailed log of all operations.
+
 Finally:
 
 * A **similarity graph** and grouped results are printed to the console.
 * A summary report is written to the `output/` folder.
 
-⚠️ While the reduced article remains in the `transforms/` folder, it’s **not intended for direct use** as a new article.
-The purpose is to highlight repetitions, not to automatically generate polished text.
+⚠️ The purpose is to highlight repetitions, not to automatically generate polished text.
 
 ---
 

@@ -6,3 +6,6 @@ __pycache__/
 
 # ignore transforms folder
 transforms/
+
+# ignore output folder
+output/

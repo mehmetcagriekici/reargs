@@ -5,47 +5,63 @@ from utils.chunk_paragraphs import chunk_paragraphs
 from utils.chunk_sentences import chunk_sentences
 from utils.get_clusters import get_clusters
 from utils.create_cluster_map import create_cluster_map
+from utils.create_output_map import create_output_map
 
-# recursive - increase level after each reduction
+from functions.write_output import write_output
+
+
 # function to transform a text file using sentence transformers
-def transform_article(level=0):
-    # inform the user
-    print("Running Sentence Transformers...")
-
-    # store similarities inside the paragraph with unique id
-    similarities_paragraphs = {}
+def transform_article():
+    paragraph_clusters_map = {}
 
     # article is the only file inside the transforms folder
-    article = open(os.path.join(PATH_TO_TRANSFORMS, os.listdir(PATH_TO_TRANSFORMS)[0])).read() 
- 
+    article_file = open(os.path.join(PATH_TO_TRANSFORMS, os.listdir(PATH_TO_TRANSFORMS)[0]))
+    article = article_file.read() 
+
     # chunk the current article into paragraphs
     paragraphs = chunk_paragraphs(article)
+
+    # close the article file
+    article_file.close()
        
+    ### reduce/transform on paragraph level
     # iterate over each paragraph of the current article
-    i = 0
-    for paragraph in paragraphs:
+    for i in range(len(paragraphs)):
         # create a unique id for the current paragraph using the current paragraph index and concatanate it with the current article id
         paragraph_id = f"paragraph--{i}"
         # chunk the paragraph into sentences
-        sentences = chunk_sentences(paragraph)
+        sentences = chunk_sentences(paragraphs[i])
         # ignore titles
         if len(sentences) > 1:
             # get paragraph clusters - sentences inside the current paragraph - deep clusters
-            paragraph_clusters = get_clusters(sentences)
+            paragraph_clusters = get_clusters(sentences, is_sentence_level=True)
             # if there are clusters - high similarity indexes
             if len(paragraph_clusters) > 0:
                 # create a cluster map for the current paragraph
                 cluster_map = create_cluster_map(sentences, paragraph_clusters, paragraph_id)
-                similarities_paragraphs[paragraph_id] = cluster_map
-
-        # increase the paragraph index
-        i += 1
+                # save the cluster
+                paragraph_clusters_map[paragraph_id] = cluster_map
     
-    # after article level reduction
-    print("Transformation is complete! Your output is ready inside the outputs folder.")      
+    ### reduce/transform on article level
+    article_clusters = get_clusters(paragraphs)
+    article_clusters_map = create_cluster_map(paragraphs, article_clusters, "cluster")
+    print("File transformation successfully completed!")
 
-    print(similarities_paragraphs)
+    print(article_clusters_map)
+    print("########################################################")
+    print(paragraph_clusters_map)
     
+    # create a map showing all the transformations
+    # string
+    output_map = create_output_map(article_clusters_map, paragraph_clusters_map)
+
+    # write the output
+    write_output(output_map)
+
+    # inform the user that process is over.
+    print("The operation completed successfully. A copy of the results has been saved in the output folder.")
+
+
 
             
  

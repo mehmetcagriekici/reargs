@@ -21,11 +21,12 @@ def get_article(arguments):
         exit(1)
 
     # remove the previous transform folder
-    shutil.rmtree(PATH_TO_TRANSFORMS)
+    if os.path.exists(PATH_TO_TRANSFORMS):
+        shutil.rmtree(PATH_TO_TRANSFORMS)
 
     # create a new transforms folder
     os.makedirs(PATH_TO_TRANSFORMS, exist_ok=True)
 
     # copy the input file into the transforms folder
     shutil.copy2(arguments[1], PATH_TO_TRANSFORMS)
-    print("File successfully passed into the transforms folder!")
+    print("File successfully copied into the transforms folder!")
