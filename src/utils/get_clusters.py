@@ -8,8 +8,8 @@ model = SentenceTransformer("all-mpnet-base-v2")
 # takes an array of sentences
 # sentence level bool
 def get_clusters(sentences, is_sentence_level=False):
-    soft_cluster_score = 0.6 if is_sentence_level else 0.7
-    hard_cluster_score = 0.8 if is_sentence_level else 0.85
+    soft_cluster_score = 0.6 if is_sentence_level else 0.8
+    hard_cluster_score = 0.8 if is_sentence_level else 0.9
 
     # store cluster indexes (hard/soft)
     clusters = {}

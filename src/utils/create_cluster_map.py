@@ -27,7 +27,9 @@ def create_cluster_map(sentences, clusters, paragraph_id):
 
             if cluster_type != cluster_map[match_id]["cluster_type"]:
                 # create a sub cluster
-                cluster_map[match_id][f"sub_cluster--({curr}, {match})"] = create_cluster(cluster_type, cluster_sentences, cluster_indexes)
+                sub_cluster = create_cluster(cluster_type, cluster_sentences, cluster_indexes)
+                # append sub cluster to the matching parent cluster's sub clusters arrray
+                cluster_map[match_id]["sub_clusters"].append(sub_cluster)
             elif match not in memo:
                 # add the match to the cluster sentences
                 cluster_map[match_id]["cluster_sentences"].append(sentences[match])
@@ -53,9 +55,10 @@ def create_cluster_map(sentences, clusters, paragraph_id):
     return cluster_map
 
 # helper function to create a cluster
-def create_cluster(cluster_type, cluster_sentences, cluster_indexes):
+def create_cluster(cluster_type, cluster_sentences, cluster_indexes, sub_clusters=None):
     return dict(
             cluster_type=cluster_type,
             cluster_sentences=cluster_sentences,
-            cluster_indexes=cluster_indexes
+            cluster_indexes=cluster_indexes,
+            sub_clusters=sub_clusters if sub_clusters else []
         )

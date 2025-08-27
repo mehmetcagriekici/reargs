@@ -47,9 +47,6 @@ def transform_article():
     article_clusters_map = create_cluster_map(paragraphs, article_clusters, "cluster")
     print("File transformation successfully completed!")
 
-    print(article_clusters_map)
-    print("########################################################")
-    print(paragraph_clusters_map)
     
     # create a map showing all the transformations
     # string

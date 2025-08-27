@@ -13,12 +13,14 @@ my drafts quickly turned into a mess because of poor planning and constant repet
 Reading an entire article multiple times to catch repetitions was frustrating, so I built **ReArgs** to automatically surface these similarities.
 It helps me:
 
-* Write **cleaner articles** by avoiding unintentional repetition.
-* **Understand other articles** better by grouping sentences and paragraphs with similar meaning.
+- Write **cleaner articles** by avoiding unintentional repetition.
+- **Understand other articles** better by grouping sentences and paragraphs with similar meaning.
 
 ---
 
 ## 🚀 How to Use
+
+Clone the repo and install dependencies:
 
 Run the provided shell script with a `.txt` file as an argument:
 
@@ -28,10 +30,10 @@ Run the provided shell script with a `.txt` file as an argument:
 
 ### Notes
 
-* The application only accepts **one `.txt` file at a time**.
-* Your original file is never modified.
-* Results are displayed in the console and also written to the `output/` folder.
-* The `transforms/` folder is used internally—do not manually modify its contents.
+- The application only accepts **one `.txt` file at a time**.
+- Your original file is never modified.
+- Results are displayed in the console and also written to the `output/` folder.
+- The `transforms/` folder is used internally—do not manually modify its contents.
 
 ---
 
@@ -41,19 +43,18 @@ Run the provided shell script with a `.txt` file as an argument:
 2. It splits the article into **paragraphs** and **sentences**.
 3. Using [Sentence Transformers](https://github.com/UKPLab/sentence-transformers), it:
 
-   * Finds semantic similarities within each paragraph.
-   * Then checks similarities **across the entire article**.
+   - Finds semantic similarities within each paragraph.
+   - Then checks similarities **across the entire article**.
 
 ### Similarity Clusters
 
-* **Hard clusters (≥ 0.8 similarity):** treated as duplicates.
-* **Soft clusters (0.6–0.8 similarity):** treated as sentences with close meaning.
-
+- **Hard clusters (≥ 0.8 similarity):** treated as duplicates.
+- **Soft clusters (0.6–0.8 similarity):** treated as sentences with close meaning.
 
 Finally:
 
-* A **similarity graph** and grouped results are printed to the console.
-* A summary report is written to the `output/` folder.
+- A **similarity graph** and grouped results are printed to the console.
+- A summary report is written to the `output/` folder.
 
 ⚠️ The purpose is to highlight repetitions, not to automatically generate polished text.
 
