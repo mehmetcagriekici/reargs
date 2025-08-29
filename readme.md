@@ -5,7 +5,7 @@ It does **not** rewrite your text for you—it simply helps you **visualize and 
 
 ---
 
-## ✨ Motivation
+## Motivation
 
 I enjoy writing posts and articles (often on Reddit), but I noticed a recurring problem:
 my drafts quickly turned into a mess because of poor planning and constant repetition.
@@ -18,7 +18,7 @@ It helps me:
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 Clone the repo and install dependencies:
 
@@ -37,7 +37,7 @@ Run the provided shell script with a `.txt` file as an argument:
 
 ---
 
-## ⚙️ How It Works
+## How It Works
 
 1. The application copies the input file into the `transforms/` folder.
 2. It splits the article into **paragraphs** and **sentences**.
@@ -56,11 +56,11 @@ Finally:
 - A **similarity graph** and grouped results are printed to the console.
 - A summary report is written to the `output/` folder.
 
-⚠️ The purpose is to highlight repetitions, not to automatically generate polished text.
+The purpose is to highlight repetitions, not to automatically generate polished text.
 
 ---
 
-## 📌 Disclaimer
+## Disclaimer
 
 ReArgs is a **writing assistant**, not an article generator.
 It is designed to **help you improve your own writing** by making patterns more visible.
