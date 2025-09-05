@@ -1,0 +1,11 @@
+[project]
+name = "ReArgs"
+version = "1.0.0"
+description = "A text organizer"
+readme = "readme.md"
+authors = [
+    {name = "Mehmet Cagri Ekici", email = "mehmetcagriekici@gmail.com"}
+]
+dependencies = [
+    "sentence-transformers >= 5.1.0"
+]

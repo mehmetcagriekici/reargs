@@ -1,2 +1,0 @@
-# requirements.txt
-sentence-transformers==5.1.0
