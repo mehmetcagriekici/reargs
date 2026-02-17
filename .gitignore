@@ -4,8 +4,8 @@ __pycache__/
 # ignore .venv/
 .venv/
 
-# ignore transforms folder
-transforms/
+# ignore environment variables
+.env
 
-# ignore output folder
-output/
+# ignore the test data
+test_data/

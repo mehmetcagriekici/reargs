@@ -1,11 +1,13 @@
 [project]
 name = "ReArgs"
-version = "1.0.0"
-description = "A text organizer"
-readme = "readme.md"
+version = "2.0.0"
+description = "an AI-powered text analysis engine designed to identify semantic patterns, repetitions, and thematic clusters in written content."
+readme = "README.md"
 authors = [
     {name = "Mehmet Cagri Ekici", email = "mehmetcagriekici@gmail.com"}
 ]
 dependencies = [
-    "sentence-transformers >= 5.1.0"
+    "google-genai>=1.63.0",
+    "python-dotenv>=1.2.1",
+    "sentence-transformers>=5.1.0",
 ]
