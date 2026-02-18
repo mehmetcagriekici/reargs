@@ -12,14 +12,23 @@ from chunk_sentences import chunk_sentences
 load_dotenv()
 gemini_api_key = os.environ.get("GEMINI_API_KEY")
 
-# main 
+# main
+# usage order:
+# 1) build a docmap with an input text
+# 2) generate similarities
 class ReargsEngine:
     def __init__(self, model_name="all-MiniLM-L6-v2"):
         self.embeddings_model = SentenceTransformer(model_name)
         # holds sentences to be embedded with metadata (paragraph id, sentence index)
         self.docmap = dict()
-        # similarities map
+        # similarities map text_id: sims
         self.simap = dict()
+        # article chunked into parts using similarites and docmap
+        self.chunks = dict()
+
+    # chunk similarities - optimizing the data before sending it to theLLM and make it more structured for better results.
+    def chunk_similarities(self):
+        pass
 
     # generate embeddings from the sentences in the docmap, calculate the similarities, store them inside the similarities map with metadata 
     def generate_similarities(self):
@@ -41,20 +50,13 @@ class ReargsEngine:
 
         # iterate over the similarities to store them in the simap (similarities[i][j] where i == j -> sentence itself, metada is stored at self.docmap[i])
         for i in range(len(similarities)):
-            # initiate a sub dictionary for each sentence with the metadata from the docmap
-            self.simap[i] = {
-                text: self.docmap[i]["text"],
-                metadata: self.docmap[i]["metadata"],
-                # initiate similarity scores - id: similarity score
-                sims: {}
-            }
+            # initiate a sub dictionary for each sentence matching the insert order in docmap
+            self.simap[i] = dict()
             
-            # i == j -> sentence itself
-            for j in range(len(similarities)):
-                if i == j:
-                    continue
+            # i == j -> sentence itself -> store only the right side to not to make duplications
+            for j in range(i + 1, len(similarities)):
                 # sentences accessible from the docmap
-                self.simap[i]["sims"][j] = similarities[i][j]
+                self.simap[i][j] = similarities[i][j]
 
     # text -> entire document
     def build_docmap(self, text):
