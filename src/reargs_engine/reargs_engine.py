@@ -27,7 +27,7 @@ class ReargsEngine:
         # article grouped by similarities using simap and docmap -> final product before LLM
         self.clusters = list()
 
-    # creates clusters frım similarities - optimizing and organizing the data before sending it to theLLM and make it more structured for better results.
+    # creates clusters from similarities - optimizing and organizing the data before sending it to the LLM and make it more structured for better results.
     def generate_clusters(self):
         # track the sentences already visited
         visited = set()
@@ -52,7 +52,7 @@ class ReargsEngine:
                         if curr_idx in matches:
                             neighbors.append(prev_idx)
 
-                    # add neighbors to vistited and the queue
+                    # add neighbors to visited and the queue
                     for neighbor in neighbors:
                         if neighbor not in visited:
                             visited.add(neighbor)
@@ -61,12 +61,12 @@ class ReargsEngine:
                     # only keep clusters with more than one sentence
                     if len(cluster) > 1:
                         # hydrate a cluster with the actual data from the docmap
-                        hydrated_cluster = [self.docmap[idx] for idx in current_cluster]
+                        hydrated_cluster = [self.docmap[idx] for idx in cluster]
                         self.clusters.append(hydrated_cluster)
 
     # generate embeddings from the sentences in the docmap, calculate the similarities, store them inside the similarities map with metadata
     # threshold -> min similarity score to be stored - default -> 0.75
-    def generate_similarities(self, threshold=0.75):
+    def generate_similarities(self, threshold=0.6):
         if len(self.docmap) == 0:
             raise ValueError("document map is empty. cannot continue with embeddings.")
 
@@ -91,8 +91,8 @@ class ReargsEngine:
             # i == j -> sentence itself -> store only the right side to not to make duplications
             for j in range(i + 1, len(similarities)):
                 # sentences accessible from the docmap
-                # if similarity score is above the treshold push it to the similarities map to be clustered
-                if similarities[i][j] >= treshold:
+                # if similarity score is above the threshold push it to the similarities map to be clustered
+                if similarities[i][j] >= threshold:
                     self.simap[i][j] = similarities[i][j]
 
     # text -> entire document
