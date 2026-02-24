@@ -1,22 +1,16 @@
 # imports
 # external
-import os
-from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
-from google import genai
 
 # internal
 from chunk_paragraphs import chunk_paragraphs
 from chunk_sentences import chunk_sentences
 
-load_dotenv()
-gemini_api_key = os.environ.get("GEMINI_API_KEY")
-
 # main
 # usage order:
 # 1) build a docmap with an input text
 # 2) create embeddings from the document and generate similarities
-# 3) create chunks from similarities to be sent to the LLM
+# 3) create chunks from similarities to be sent to the server
 class ReargsEngine:
     def __init__(self, model_name="all-MiniLM-L6-v2"):
         self.embeddings_model = SentenceTransformer(model_name)
@@ -24,10 +18,14 @@ class ReargsEngine:
         self.docmap = dict()
         # similarities map text_id: sims (dict) (similarity scores between the current text and the rest)
         self.simap = dict()
-        # article grouped by similarities using simap and docmap -> final product before LLM
+        # article grouped by similarities using simap and docmap -> final product
         self.clusters = list()
 
-    # creates clusters from similarities - optimizing and organizing the data before sending it to the LLM and make it more structured for better results.
+    # return clusters
+    def get_clusters(self):
+        return self.clusters
+
+    # creates clusters from similarities - optimizing and organizing the data before sending it to the server and make it more structured.
     def generate_clusters(self):
         # track the sentences already visited
         visited = set()
@@ -39,9 +37,10 @@ class ReargsEngine:
                 cluster = []
                 # queue to control the loop -> stores so far visited sentences and pops them -> initiated with the current sentence if not in visited
                 queue = [i]
+                visited.add(i)
 
                 while queue:
-                    curr_idx = queue[0]
+                    curr_idx = queue.pop(0)
                     cluster.append(curr_idx)
 
                     # get all the neighbours -> first check everything curr_index points to
