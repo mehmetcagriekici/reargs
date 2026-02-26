@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 import json
 
-from prompt_template import PROMPT_TEMPLATE
+from .prompt_template import PROMPT_TEMPLATE
 
 # load the api key from .env file
 load_dotenv()

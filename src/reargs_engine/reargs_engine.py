@@ -3,8 +3,8 @@
 from sentence_transformers import SentenceTransformer
 
 # internal
-from chunk_paragraphs import chunk_paragraphs
-from chunk_sentences import chunk_sentences
+from .chunk_paragraphs import chunk_paragraphs
+from .chunk_sentences import chunk_sentences
 
 # main
 # usage order:
