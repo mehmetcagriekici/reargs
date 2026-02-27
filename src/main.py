@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import FastAPI, UploadFile, HTTPException
 from typing import Annotated
 
@@ -31,11 +33,16 @@ async def get_similarities():
 async def get_similarities():
     return {"message": "will be implemented after chromadb and data persistency."}
 
+# save into the chromadb
+@app.post("/similarities/save/{similarity_id}")
+async def save_similarities(similarity_id: str):
+    return {"message": "will be implemented after chromadb and data persistency."}
+
 # post
 # get document, post clusters from reargs engine
 # pass the document with the body
 @app.post("/similarities/")
-async def post_similarities(file: UploadFile):
+async def post_similarities(file: UploadFile) -> ClusterResponse:
     valid_types = ["text/plain", "text/markdown", "application/pdf"]
 
     # check if the uploaded file is .txt, .md or .pdf
@@ -68,10 +75,29 @@ async def post_similarities(file: UploadFile):
 
     # get clusters to be returned and saved to chromadb
     clusters = reargs_engine.get_clusters()
-    
-    return {"message": "ReArgs endpoint to create similarity clusters from .txt, .md, and .pdf files."}
 
-# get clusters, post response 
-@app.post("/similarities/llm/")
-async def post_similarities_llm(clusters: LLMRequest):
-    return {"message": "takes clusters as a list of cluster objects, returns an llm response as a json object"}
+    # generate random uuid to be id
+    x = uuid.uuid4()
+    id = str(x)
+
+    return {
+        "id": id,
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "clusters": clusters,
+    }
+
+# get clusters, post response
+# pass id with the paramaters - id of the clusters
+@app.post("/similarities/llm/{id}")
+async def post_similarities_llm(id: str, clusters: LLMRequest) -> LLMResponse:
+    # get clusters into the ReargsLLM
+    reargs_llm.get_clusters(clusters.clusters)
+    # generate content
+    reargs_llm.generate_content()
+    # return the structured llm response
+    clusters = reargs_llm.get_response()
+    return {
+        "id": id,
+        "clusters": clusters,
+    }
