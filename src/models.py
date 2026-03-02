@@ -41,3 +41,10 @@ class LLMRequest(BaseModel):
 class LLMResponse(BaseModel):
     id: str
     clusters: List[LLMCluster]
+
+# chroma db data model - for both llm and cluster responses
+class ChromaData(BaseModel):
+    # name of the collection
+    id: str
+    # no collection level metada but document level metadata
+    data: List[Cluster] | List[LLMCluster]
