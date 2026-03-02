@@ -5,8 +5,9 @@ from typing import Annotated
 
 from reargs_engine.reargs_engine import ReargsEngine
 from reargs_llm.reargs_llm import ReargsLLM
+from chroma_db.chroma_db import generate_collection
 
-from .models import ClusterResponse, LLMRequest, LLMResponse
+from .models import ClusterResponse, LLMRequest, LLMResponse, ChromaData
 
 from lib.markdown_processor import markdown_processor
 from lib.pdf_processor import pdf_processor
@@ -21,22 +22,20 @@ reargs_llm = ReargsLLM()
 # API endpoints
 
 # get
-# return all clusters
-# later with chroma db
-@app.get("/similarities/")
-async def get_similarities():
-    return {"message": "will be implemented after chromadb and data persistency."}
-
-# return all responses
-# later with chroma db
-@app.get("/similarities/llm/")
-async def get_similarities():
+# return clusters from chroma db with query and collection name
+@app.get("/similarities/{collection_name}/{query}")
+async def get_similarities(collection_name: str, query: str):
     return {"message": "will be implemented after chromadb and data persistency."}
 
 # save into the chromadb
-@app.post("/similarities/save/{similarity_id}")
-async def save_similarities(similarity_id: str):
-    return {"message": "will be implemented after chromadb and data persistency."}
+# post clusters into the chroma db to be queried
+@app.post("/similarities/save/")
+async def save_similarities(chromaData: ChromaData):
+    # generate a collection and seed the collection - chromadb database - with the data
+    generate_collection(chromaData.id, chromaData.data)
+    return {"message": f"A new collection created with the name: {chromaData.id} on the chromadb cloud."}
+
+# delete an existing collection - irreversible
 
 # post
 # get document, post clusters from reargs engine

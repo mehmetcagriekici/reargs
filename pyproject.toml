@@ -15,4 +15,5 @@ dependencies = [
   "markdown>=3.10.2",
   "beautifulsoup4>=4.14.3",
   "pymupdf>=1.27.1",
+  "chromadb>=1.5.2",
 ]
