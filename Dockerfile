@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
+# Install CPU-only versions of torch first
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
 COPY pyproject.toml ./
 
 # Copy source code (needed for pip to install the package)

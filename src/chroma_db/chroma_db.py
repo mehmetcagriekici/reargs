@@ -11,9 +11,9 @@ chroma_tenant = os.environ.get("CHROMA_TENANT")
 chroma_db = os.environ.get("CHROMA_DATABASE")
 
 client = chromadb.CloudClient(
-      api_key=api_key,
-      tenant=chroma_tenant,
-      database=chroma_db
+    tenant=chroma_tenant,
+    database=chroma_db,
+    api_key=api_key
 )
 
 # LLM data structure
