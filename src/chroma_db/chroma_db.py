@@ -68,3 +68,17 @@ def generate_collection(collection_name, chromaData):
     collection.add(ids=ids,
                    documents=documets,
                    )
+
+# query collection and get data
+def get_queries(collection_name, query, limit):
+    collection = client.get_collection(name=collection_name)
+    
+    res = collection.query(query_texts=[query],
+                           n_results=limit
+                           )
+    return res.documents
+    
+
+# delete collection
+def delete_collection(collection_name):
+    client.delete_collection(name=collection_name)

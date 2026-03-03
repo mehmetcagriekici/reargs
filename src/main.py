@@ -5,7 +5,7 @@ from typing import Annotated
 
 from reargs_engine.reargs_engine import ReargsEngine
 from reargs_llm.reargs_llm import ReargsLLM
-from chroma_db.chroma_db import generate_collection
+from chroma_db.chroma_db import generate_collection, delete_collection, get_queries
 
 from .models import ClusterResponse, LLMRequest, LLMResponse, ChromaData
 
@@ -21,11 +21,23 @@ reargs_llm = ReargsLLM()
 
 # API endpoints
 
+# delete
+# delete a collection from chroma db
+@app.delete("/similarities/delete/{collection_name}")
+async def delete_collection(collection_name: str):
+    delete_collection(collection_name)
+    return {"message": f"Collection {collection_name} is deleted from the chroma db cloud."}
+
 # get
 # return clusters from chroma db with query and collection name
-@app.get("/similarities/{collection_name}/{query}")
-async def get_similarities(collection_name: str, query: str):
-    return {"message": "will be implemented after chromadb and data persistency."}
+@app.get("/similarities/{collection_name}/{query}/{limit}")
+async def get_similarities(collection_name: str, query: str, limit: int):
+    docs = get_queries(collection_name, query, limit)
+    return {
+        "message": f"chroma db results for the query: {query} from the collection: {collection_name}",
+        "collection_name": collection_name,
+        "documents": docs
+    }
 
 # save into the chromadb
 # post clusters into the chroma db to be queried
