@@ -16,4 +16,5 @@ dependencies = [
   "beautifulsoup4>=4.14.3",
   "pymupdf>=1.27.1",
   "chromadb>=1.5.2",
+  "pytest>=9.0.2",
 ]
