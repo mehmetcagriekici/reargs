@@ -31,8 +31,8 @@ class ReargsLLM:
         # loop over the clusters
         for cluster_idx in range(len(self.clusters)):
             # convert cluster into json before passing it to the prompt
-            hydrated_cluster = self.clusters[cid]
-            cluster_payload = {"cluster_id": cid, "sentences": hydrated_cluster}
+            hydrated_cluster = self.clusters[cluster_idx]
+            cluster_payload = {"cluster_id": cluster_idx, "sentences": hydrated_cluster}
             cluster_json = json.dumps(cluster_payload, ensure_ascii=False)
 
             # create the prompt using the json and template
