@@ -1,51 +1,98 @@
-# ReArgs
+# Reargs Similarity API
 
-**ReArgs** is a cloud-native semantic analysis engine that leverages Large Language Models (LLMs) and vector embeddings to detect patterns, redundancies, and thematic clusters in written content. 
+ReArgs is a semantic document analysis API that helps writers identify patterns and redundancies in their writing using AI.
 
-Originally built as a local CLI tool to help writers identify unintentional repetitions, ReArgs has evolved into a containerized REST API powered by a Retrieval-Augmented Generation (RAG) architecture.
+## Features
 
-## 🚀 The Mission
+- File upload and processing (.txt, .md, .pdf)
+- Automatic document mapping, similarity calculation and clustering
+- Persistent storage of clusters in Chroma vector database
+- Natural language query of similar clusters
+- LLM-powered content generation from selected clusters
+- Collection management (create / delete)
 
-Writing complex technical articles often leads to fragmented drafts and semantic "bloat." ReArgs automates the identification of these patterns, providing a data-driven map of a document's logical flow. By integrating Google's Gemini LLM and Sentence-Transformers, the system doesn't just find duplicates—it understands the context and intent of your writing.
+## Tech Stack
 
-## 🛠️ Technology Stack
+- Python 3.11+
+- FastAPI
+- ChromaDB
+- Custom Reargs Engine & Reargs LLM modules
+- PDF and Markdown processing utilities
+- Uvicorn (ASGI server)
+- Docker + multi-stage build
 
-- **Language:** Python 3.10+
-- **API Framework:** FastAPI / Uvicorn
-- **AI/ML Layer:** Google Gemini (LLM), Sentence-Transformers (Embeddings)
-- **Data Persistence:** ChromaDB (Vector Database for RAG)
-- **Containerization:** Docker & Docker Compose
-- **Orchestration:** Kubernetes (K8s)
-- **CI/CD:** GitHub Actions
+## API Endpoints
 
-## 🏗️ System Architecture
+| Method | Endpoint                                              | Description                                                  | Request                                      | Response                          |
+|--------|-------------------------------------------------------|--------------------------------------------------------------|----------------------------------------------|-----------------------------------|
+| POST   | /similarities/                                        | Upload document and return clusters                          | UploadFile (txt/md/pdf)                      | ClusterResponse (id + clusters)   |
+| POST   | /similarities/save/                                   | Save clusters to a new Chroma collection                     | JSON: ChromaData (id, data)                  | Success message                   |
+| GET    | /similarities/{collection_name}/{query}/{limit}       | Search similar items in a collection                         | Path: collection_name, query, limit          | Documents + metadata              |
+| DELETE | /similarities/delete/{collection_name}                | Delete a Chroma collection                                   | Path: collection_name                        | Success message                   |
+| POST   | /similarities/llm/{id}                                | Generate LLM content/response from selected clusters         | Path: id<br>Body: LLMRequest (clusters)      | LLMResponse (processed clusters)  |
 
-ReArgs is designed with a modern, decoupled architecture:
+## Installation & Running
 
-1.  **Client Layer:** Users interact with the system via a RESTful API.
-2.  **Processing Engine:** Text is ingested, cleaned, and split into semantic chunks.
-3.  **Embedding & Vectorization:** Chunks are converted into high-dimensional vectors using Sentence-Transformers and stored in a local vector database.
-4.  **Intelligence Layer (RAG):** When a query is made or a document is analyzed, the system retrieves relevant context from the vector store and passes it to the Gemini LLM for high-level semantic insights.
-5.  **Deployment:** The entire stack is containerized, ensuring consistent environments from development to production.
-
-## 📦 Installation & Setup
-
-### Prerequisites
-- Docker & Docker Compose
-- Google Gemini API Key
+The project uses pyproject.toml for dependency management (no requirements.txt file).
 
 ### Local Development
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/reargs.git
-   cd reargs
-   ```
-2. Create a `.env` file and add your Gemini API Key:
-    ```
-    GEMINI_API_KEY=your_api_key_here
-    ```
-3. Build and run the containers:
-   ```bash
-   docker-compose up --build
-   ```
-4. Your API will be available at `http://localhost:8000`
+
+1. Create and activate virtual environment 
+   python -m venv .venv 
+   source .venv/bin/activate          # Linux/macOS 
+		 
+2. Install dependencies and project 
+   pip install --upgrade pip 
+   pip install -e .
+			   
+3. Run the API (development mode with auto-reload) 
+   uvicorn src.main:app --reload --port 8000
+				  
+   For production-like run: 
+   uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4
+						
+### Running with Docker (recommended)
+						
+The repository includes a Dockerfile and docker-compose.yml.
+						
+1. Prepare environment variables (create .env file if needed) 
+   Example .env content: 
+   CHROMA_HOST=your-chroma-host-url 
+   CHROMA_API_KEY=your-chroma-key
+   CHROMA_DATABASE=your-chroma-database-name
+   GEMINI_API_KEY=your-gemini-api-key
+   
+2. Build and start 
+   docker compose up --build
+										  
+3. Access the API 
+   http://localhost:8000 
+   http://localhost:8000/docs  (interactive Swagger UI)
+													  
+4. Stop services 
+   docker compose down
+															   
+## Docker Notes
+
+- Multi-stage build → smaller final image 
+- Uses CPU-only PyTorch 
+- Runs as non-root user (appuser) 
+- Single worker by default (can be adjusted in Dockerfile CMD) 
+- Port 8000 exposed
+															   
+## Usage Examples
+
+Upload document and get clusters
+curl -X POST "http://localhost:8000/similarities/" -F "file=@report.md"
+															   
+Save clusters to Chroma  
+curl -X POST "http://localhost:8000/similarities/save/" -H "Content-Type: application/json" -d '{"id": "doc-abc123", "data": [...]}'
+															   
+Query similar content 
+curl "http://localhost:8000/similarities/doc-abc123/what%20is%20the%20main%20goal/5"
+															   
+Generate LLM response 
+curl -X POST "http://localhost:8000/similarities/llm/doc-abc123" -H "Content-Type: application/json" -d '{"clusters": [...]}'
+															   
+Delete collection 
+curl -X DELETE "http://localhost:8000/similarities/delete/doc-abc123"
