@@ -33,19 +33,29 @@ ReArgs is a semantic document analysis API that helps writers identify patterns 
 
 ## Installation & Running
 
-The project uses pyproject.toml for dependency management (no requirements.txt file).
+The project uses pyproject.toml for dependency management
+
+### Environment Variables
+
+``` dotenv
+   CHROMA_HOST=your-chroma-host-url 
+   CHROMA_API_KEY=your-chroma-key
+   CHROMA_DATABASE=your-chroma-database-name
+   GEMINI_API_KEY=your-gemini-api-key
+```
 
 ### Local Development
+1. Prepare environment variables
 
-1. Create and activate virtual environment 
+2. Create and activate virtual environment 
    python -m venv .venv 
-   source .venv/bin/activate          # Linux/macOS 
+   source .venv/bin/activate 
 		 
-2. Install dependencies and project 
+3. Install dependencies and project 
    pip install --upgrade pip 
    pip install -e .
 			   
-3. Run the API (development mode with auto-reload) 
+4. Run the API (development mode with auto-reload) 
    uvicorn src.main:app --reload --port 8000
 				  
    For production-like run: 
@@ -55,12 +65,7 @@ The project uses pyproject.toml for dependency management (no requirements.txt f
 						
 The repository includes a Dockerfile and docker-compose.yml.
 						
-1. Prepare environment variables (create .env file if needed) 
-   Example .env content: 
-   CHROMA_HOST=your-chroma-host-url 
-   CHROMA_API_KEY=your-chroma-key
-   CHROMA_DATABASE=your-chroma-database-name
-   GEMINI_API_KEY=your-gemini-api-key
+1. Prepare environment variables
    
 2. Build and start 
    docker compose up --build
@@ -82,17 +87,32 @@ The repository includes a Dockerfile and docker-compose.yml.
 															   
 ## Usage Examples
 
-Upload document and get clusters
+- Upload document and get clusters
+
+``` shell
 curl -X POST "http://localhost:8000/similarities/" -F "file=@report.md"
-															   
-Save clusters to Chroma  
+```
+
+- Save clusters to Chroma 
+
+``` shell
 curl -X POST "http://localhost:8000/similarities/save/" -H "Content-Type: application/json" -d '{"id": "doc-abc123", "data": [...]}'
+```
 															   
-Query similar content 
+- Query similar content 
+
+``` shell
 curl "http://localhost:8000/similarities/doc-abc123/what%20is%20the%20main%20goal/5"
+```
 															   
-Generate LLM response 
+- Generate LLM response 
+
+``` shell
 curl -X POST "http://localhost:8000/similarities/llm/doc-abc123" -H "Content-Type: application/json" -d '{"clusters": [...]}'
+```
 															   
-Delete collection 
+- Delete collection 
+
+``` shell
 curl -X DELETE "http://localhost:8000/similarities/delete/doc-abc123"
+```
