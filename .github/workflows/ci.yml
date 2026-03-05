@@ -5,10 +5,8 @@ name: ci
 
 on:
   push:
-    branches: [ "reargs_updated" ]
-  pull_request:
     branches: [ "main" ]
-
+    
 permissions:
   contents: read
 
