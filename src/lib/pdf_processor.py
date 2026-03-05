@@ -1,8 +1,8 @@
 import pymupdf
 
-def pdf_processor(bytes: bytes):
+def pdf_processor(content: bytes):
     # createish a pdf document from the file content bytes
-    doc = pymupdf.open(stream=bytes, filetype="pdf")
+    doc = pymupdf.open(stream=content, filetype="pdf")
 
     text_parts = []
     # iterate over the doc parts

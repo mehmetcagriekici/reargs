@@ -82,7 +82,7 @@ async def post_similarities(file: UploadFile) -> ClusterResponse:
 
     if file.content_type == "application/pdf":
         content_bytes = await file.read()
-        text = pdf_processor(bytes)
+        text = pdf_processor(content_bytes)
 
     # build the docmap
     reargs_engine.build_docmap(text)
