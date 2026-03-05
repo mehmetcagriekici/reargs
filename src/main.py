@@ -71,12 +71,12 @@ async def post_similarities(file: UploadFile) -> ClusterResponse:
     text = ""
     if file.content_type == "text/plain":
         # plain text file content
-        text = await file.read().decode("utf-8")
+        text = (await file.read()).decode("utf-8")
 
     # .md
     if file.content_type == "text/markdown":
         # markdown file content
-        markdown_content = await file.read().decode("utf-8")
+        markdown_content = (await file.read()).decode("utf-8")
         # extract text from markdown (convert to html -> extract text)
         text = markdown_processor(markdown_content)
 
