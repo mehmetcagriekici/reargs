@@ -20,6 +20,11 @@ reargs_llm = ReargsLLM()
 
 # API endpoints
 
+# deployment
+@app.get("/")
+def health_check():
+    return {"status": "ok"}
+
 # delete
 # delete a collection from chroma db
 @app.delete("/similarities/delete/{collection_name}")
