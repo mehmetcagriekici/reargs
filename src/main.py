@@ -23,8 +23,11 @@ reargs_llm = ReargsLLM()
 # deployment
 @app.get("/")
 def health_check():
-    return {"status": "ok"}
-
+    return {
+        "service": "ReArgs Similarity API",
+        "status": "ok",
+        "docs": "/docs"
+    }
 # delete
 # delete a collection from chroma db
 @app.delete("/similarities/delete/{collection_name}")
