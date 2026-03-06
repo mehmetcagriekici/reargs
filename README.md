@@ -1,3 +1,13 @@
+---
+title: ReArgs
+emoji: ✍️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 8000
+pinned: false
+---
+
 # Reargs Similarity API
 
 ReArgs is a semantic document analysis API that helps writers identify patterns and redundancies in their writing using AI.
