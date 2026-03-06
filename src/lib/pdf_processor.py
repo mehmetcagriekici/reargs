@@ -10,11 +10,12 @@ def pdf_processor(content: bytes):
         # get the blocks from the page
         # (x0, y0, x1, y1, "lines in block", block_no, block_type) ->index 4
         blocks = page.get_text("blocks")
-
-        # add texts (lines) into the text parts - skip empty
-        texts = blocks[4].strip()
-        if texts:
-            text_parts.append(texts)
+        
+        for block in blocks:
+            text = block[4].strip()
+            if text:
+                # add texts (lines) into the text parts - skip empty
+                text_parts.append(text)
 
     doc.close()
 
