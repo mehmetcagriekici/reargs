@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import uuid
 
 from fastapi import FastAPI, UploadFile, HTTPException
