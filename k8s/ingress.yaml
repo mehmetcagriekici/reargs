@@ -1,0 +1,21 @@
+# Generic nginx-ingress example. Adjust ingressClassName/host for your
+# cluster, or delete this file and use `kubectl port-forward`/a LoadBalancer
+# Service instead if you don't have an ingress controller installed.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reargs
+  namespace: reargs
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: reargs.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reargs
+                port:
+                  number: 80

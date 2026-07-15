@@ -5,12 +5,12 @@ __pycache__/
 
 # ignore .venv/
 .venv/
-<<<<<<< HEAD
 
 # ignore environment variables
 .env
 
 # ignore the test data
 test_data/
-=======
->>>>>>> bcbc02b (chunking into paragraphs and sentences before transforming)
+
+# ignore a filled-in k8s secret manifest (use k8s/secret.example.yaml as the template)
+k8s/secret.yaml

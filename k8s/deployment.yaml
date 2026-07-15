@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reargs
+  namespace: reargs
+  labels:
+    app: reargs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: reargs
+  template:
+    metadata:
+      labels:
+        app: reargs
+    spec:
+      containers:
+        - name: reargs
+          # Built by .github/workflows/cd.yml on every push to main.
+          # Swap in your Docker Hub username (or your own registry/image).
+          image: <your-dockerhub-username>/reargs:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: reargs-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "768Mi"
+            limits:
+              cpu: "1"
+              memory: "1.5Gi"
+          # The sentence-transformers model loads at process start (before
+          # uvicorn accepts connections) and is fetched from huggingface.co
+          # on first run since it isn't baked into the image. Give it room
+          # to download/load before liveness/readiness start judging it.
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8000
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            periodSeconds: 15
+            failureThreshold: 3
