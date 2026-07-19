@@ -24,3 +24,14 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/reargs:latest
+
+    - name: Render k8s manifests
+      run: |
+        sed -i "s#__DOCKERHUB_USERNAME__#${{ secrets.DOCKERHUB_USERNAME }}#" k8s/kustomization.yaml
+        kubectl kustomize k8s > rendered-manifests.yaml
+
+    - name: Upload rendered manifests
+      uses: actions/upload-artifact@v4
+      with:
+        name: k8s-manifests
+        path: rendered-manifests.yaml

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+# Rewrites the deployment.yaml placeholder `reargs:latest` to the real
+# Docker Hub image. Locally, edit newName below (or run
+# `kustomize edit set image reargs=<your-dockerhub-username>/reargs:latest`
+# from inside k8s/). In CI, cd.yml substitutes __DOCKERHUB_USERNAME__ from
+# the DOCKERHUB_USERNAME secret before rendering — see the "Render k8s
+# manifests" step.
+images:
+  - name: reargs
+    newName: __DOCKERHUB_USERNAME__/reargs
+    newTag: latest

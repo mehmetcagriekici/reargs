@@ -94,6 +94,29 @@ The repository includes a Dockerfile and docker-compose.yml.
 - Runs as non-root user (appuser) 
 - Single worker by default (can be adjusted in Dockerfile CMD) 
 - Port 8000 exposed
+
+## Deploying to Kubernetes
+
+Manifests live under `k8s/` (namespace, deployment, service, ingress) and are assembled with `kustomize`.
+
+1. Create the secrets (never commit real values — see `k8s/secret.example.yaml`):
+   ```shell
+   kubectl create secret generic reargs-secrets \
+     --from-env-file=.env \
+     --namespace=reargs
+   ```
+2. Point `k8s/kustomization.yaml` at your image — either edit `newName` directly, or:
+   ```shell
+   cd k8s && kustomize edit set image reargs=<your-dockerhub-username>/reargs:latest
+   ```
+3. Apply:
+   ```shell
+   kubectl apply -k k8s/
+   ```
+
+`.github/workflows/cd.yml` builds and pushes the image on every push to `main`, then renders the manifests (substituting `DOCKERHUB_USERNAME`) and uploads them as a `k8s-manifests` build artifact — it does not deploy to a live cluster.
+
+`k8s/ingress.yaml` assumes an nginx ingress controller and a placeholder host; adjust `ingressClassName`/`host` for your cluster, or delete it and use `kubectl port-forward`/a `LoadBalancer` Service instead.
 															   
 ## Usage Examples
 

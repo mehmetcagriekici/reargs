@@ -17,9 +17,11 @@ spec:
     spec:
       containers:
         - name: reargs
-          # Built by .github/workflows/cd.yml on every push to main.
-          # Swap in your Docker Hub username (or your own registry/image).
-          image: <your-dockerhub-username>/reargs:latest
+          # Placeholder name/tag — resolved to the real Docker Hub image
+          # (built by .github/workflows/cd.yml) by kustomize. See
+          # k8s/kustomization.yaml. Don't edit this to a real image name;
+          # override it there (or via `kustomize edit set image`) instead.
+          image: reargs:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
