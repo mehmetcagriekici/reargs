@@ -1,22 +1,26 @@
 from google import genai
+from google.genai import types
 
 import os
 from dotenv import load_dotenv
 
 import json
 
+from lib.models import LLMCluster
+
 from .prompt_template import PROMPT_TEMPLATE
 
 # load the api key from .env file
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 
-# takes clusters from the server -> list[list[dict]] : check reargs_engine to see implementation
+# takes clusters from the server, check reargs_engine to see implementation
 class ReargsLLM:
     def __init__(self):
-        self.client = genai.Client(api_key=api_key)
-        self.clusters = None
-        self.response = list()
+        self.client = client
+        self.clusters = []
+        self.response = []
 
     # return llm response
     def get_response(self):
@@ -29,11 +33,10 @@ class ReargsLLM:
     # generate content with genai
     def generate_content(self, model="gemini-2.5-flash"):
         # loop over the clusters
-        for cluster_idx in range(len(self.clusters)):
+        for i in range(len(self.clusters)):
             # convert cluster into json before passing it to the prompt
-            hydrated_cluster = self.clusters[cluster_idx]
-            cluster_payload = {"cluster_id": cluster_idx, "sentences": hydrated_cluster}
-            cluster_json = json.dumps(cluster_payload, ensure_ascii=False)
+            hydrated_cluster = self.clusters[i]
+            cluster_json = json.dumps(hydrated_cluster, ensure_ascii=False)
 
             # create the prompt using the json and template
             prompt = PROMPT_TEMPLATE.replace("{cluster_json}", cluster_json)
@@ -42,6 +45,10 @@ class ReargsLLM:
             response = self.client.models.generate_content(
                 model=model,
                 contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=LLMCluster
+                    )
             )
 
             # validate if response is valid json

@@ -2,6 +2,7 @@ import chromadb
 
 import os
 from dotenv import load_dotenv
+from lib.models import  Cluster, LLMCluster
 
 # load the api key from .env file
 load_dotenv()
@@ -35,31 +36,37 @@ client = chromadb.CloudClient(
     # metadata: SentenceMetaData # document level metadata
 
 # Sentence Item Metadata
-    # paragraph_index: int
-    # sentence_index: int
+    # paragraph_index: str
+    # sentence_index: str
     # full_paragraph_text: str
 
 # collection names are uuids of the reargs response models
 # it's practically zero to get same collection name
-def generate_collection(collection_name, chromaData):
+def generate_collection(collection_name: str, chromaData: list[Cluster] | list[LLMCluster]):
     # create a collection on the cloud
     collection = client.create_collection(name=collection_name)
 
     # extract ids and the documents from the data - models described above -
     # cluster already has metadata - document level -
-    ids = list()
-    documets = list()
+    ids = []
+    documets = []
 
     # iterate over the chroma data
     for data in chromaData:
-        ids.append(data.cluster_id) # exist in both
+        ids.append(str(data.cluster_id)) # exist in both
 
         # stringify rest of the data to be appended to documents
         doc = ""
-        for key in data:
-            if key != "cluster_id":
-                # check if list
-                pass
+        if isinstance(data, Cluster):
+            # only sentence text goes into chroma db
+            doc += "\n".join([sentence_item.text for sentence_item in data.sentences])
+
+        if isinstance(data, LLMCluster):
+            # strings that go to chroma db
+            doc += f"{data.title} {data.condensed_summary}"
+            doc += "\n"
+            # list that goes to chroma db
+            doc += " ".join(data.keywords)
         
         # append doc to the documents
         documets.append(doc)
@@ -76,7 +83,8 @@ def get_queries(collection_name, query, limit):
     res = collection.query(query_texts=[query],
                            n_results=limit
                            )
-    return res.documents
+    # query result is a dict, not an object -> index by key
+    return res["documents"]
     
 
 # delete collection

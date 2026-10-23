@@ -6,20 +6,23 @@ from sentence_transformers import SentenceTransformer
 from .chunk_paragraphs import chunk_paragraphs
 from .chunk_sentences import chunk_sentences
 
+# shared and loaded once
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
 # main
 # usage order:
 # 1) build a docmap with an input text
 # 2) create embeddings from the document and generate similarities
 # 3) create chunks from similarities to be sent to the server
 class ReargsEngine:
-    def __init__(self, model_name="all-MiniLM-L6-v2"):
-        self.embeddings_model = SentenceTransformer(model_name)
+    def __init__(self):
+        self.embeddings_model = model
         # holds sentences to be embedded with metadata (paragraph id, sentence index)
-        self.docmap = dict()
+        self.docmap = {}
         # similarities map text_id: sims (dict) (similarity scores between the current text and the rest)
-        self.simap = dict()
+        self.simap = {}
         # article grouped by similarities using simap and docmap -> final product
-        self.clusters = list()
+        self.clusters = []
 
     # return clusters
     def get_clusters(self):
@@ -57,11 +60,11 @@ class ReargsEngine:
                             visited.add(neighbor)
                             queue.append(neighbor)
 
-                    # only keep clusters with more than one sentence
-                    if len(cluster) > 1:
-                        # hydrate a cluster with the actual data from the docmap
-                        hydrated_cluster = [self.docmap[idx] for idx in cluster]
-                        self.clusters.append(hydrated_cluster)
+                # only keep clusters with more than one sentence
+                if len(cluster) > 1:
+                    # hydrate a cluster with the actual data from the docmap
+                    hydrated_cluster = [self.docmap[idx] for idx in cluster]
+                    self.clusters.append(hydrated_cluster)
 
     # generate embeddings from the sentences in the docmap, calculate the similarities, store them inside the similarities map with metadata
     # threshold -> min similarity score to be stored - default -> 0.75

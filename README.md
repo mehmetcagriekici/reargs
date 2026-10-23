@@ -48,7 +48,7 @@ The project uses pyproject.toml for dependency management
 ### Environment Variables
 
 ``` dotenv
-   CHROMA_HOST=your-chroma-host-url 
+   CHROMA_TENANT=your-chroma-tenant-id
    CHROMA_API_KEY=your-chroma-key
    CHROMA_DATABASE=your-chroma-database-name
    GEMINI_API_KEY=your-gemini-api-key

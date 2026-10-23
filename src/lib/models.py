@@ -1,10 +1,10 @@
 from pydantic import BaseModel
-from typing import List, Literal
+from typing import  Literal
 
 # Base Models
 class SentenceMetaData(BaseModel):
-    paragraph_index: int
-    sentence_index: int
+    paragraph_index: str
+    sentence_index: str
     full_paragraph_text: str
 
 class SentenceItem(BaseModel):
@@ -13,13 +13,13 @@ class SentenceItem(BaseModel):
 
 class Cluster(BaseModel):
     cluster_id: int
-    sentences: List[SentenceItem]
+    sentences: list[SentenceItem]
 
 class LLMCluster(BaseModel):
     cluster_id: int
     title: str
     condensed_summary: str
-    keywords: List[str]
+    keywords: list[str]
     importance: Literal["high", "medium", "low"]
     cohesion: float
     representative_sentence: str
@@ -31,20 +31,20 @@ class ClusterResponse(BaseModel):
     id: str
     filename: str
     content_type: str
-    clusters: List[List[SentenceItem]]
+    clusters: list[list[SentenceItem]]
 
 # reargs llm input
 class LLMRequest(BaseModel):
-    clusters: List[Cluster]
+    clusters: list[Cluster]
     
 # reargs llm output
 class LLMResponse(BaseModel):
     id: str
-    clusters: List[LLMCluster]
+    clusters: list[LLMCluster]
 
 # chroma db data model - for both llm and cluster responses
 class ChromaData(BaseModel):
     # name of the collection
     id: str
     # no collection level metada but document level metadata
-    data: List[Cluster] | List[LLMCluster]
+    data: list[Cluster] | list[LLMCluster]

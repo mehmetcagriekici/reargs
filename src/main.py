@@ -13,13 +13,8 @@ from lib.models import ClusterResponse, LLMRequest, LLMResponse, ChromaData
 
 # fast api server
 app = FastAPI()
-# reargs engine
-reargs_engine = ReargsEngine()
-# reargs llm
-reargs_llm = ReargsLLM()
 
 # API endpoints
-
 # deployment
 @app.get("/")
 def health_check():
@@ -31,14 +26,14 @@ def health_check():
 # delete
 # delete a collection from chroma db
 @app.delete("/similarities/delete/{collection_name}")
-async def delete_collection(collection_name: str):
+def delete_collection_from_chroma(collection_name: str):
     delete_collection(collection_name)
     return {"message": f"Collection {collection_name} is deleted from the chroma db cloud."}
 
 # get
 # return clusters from chroma db with query and collection name
 @app.get("/similarities/{collection_name}/{query}/{limit}")
-async def get_similarities(collection_name: str, query: str, limit: int):
+def get_similarities_from_chroma(collection_name: str, query: str, limit: int):
     docs = get_queries(collection_name, query, limit)
     return {
         "message": f"chroma db results for the query: {query} from the collection: {collection_name}",
@@ -49,7 +44,7 @@ async def get_similarities(collection_name: str, query: str, limit: int):
 # save into the chromadb
 # post clusters into the chroma db to be queried
 @app.post("/similarities/save/")
-async def save_similarities(chromaData: ChromaData):
+def save_similarities_to_chroma(chromaData: ChromaData):
     # generate a collection and seed the collection - chromadb database - with the data
     generate_collection(chromaData.id, chromaData.data)
     return {"message": f"A new collection created with the name: {chromaData.id} on the chromadb cloud."}
@@ -60,30 +55,35 @@ async def save_similarities(chromaData: ChromaData):
 # get document, post clusters from reargs engine
 # pass the document with the body
 @app.post("/similarities/")
-async def post_similarities(file: UploadFile) -> ClusterResponse:
-    valid_types = ["text/plain", "text/markdown", "application/pdf"]
+def post_similarities(file: UploadFile) -> ClusterResponse:
 
     # check if the uploaded file is .txt, .md or .pdf
-    if file.content_type not in valid_types:
+    filename = file.filename.lower() if file.filename else ""
+    txt = filename.endswith(".txt")
+    markdown = filename.endswith(".md")
+    pdf = filename.endswith(".pdf")
+    if not txt and not markdown and not pdf:
         raise HTTPException(status_code=400, detail="Unsupported file type")
 
     # .txt
     text = ""
-    if file.content_type == "text/plain":
+    if txt:
         # plain text file content
-        text = (await file.read()).decode("utf-8")
+        text = (file.file.read()).decode("utf-8")
 
     # .md
-    if file.content_type == "text/markdown":
+    if markdown:
         # markdown file content
-        markdown_content = (await file.read()).decode("utf-8")
+        markdown_content = (file.file.read()).decode("utf-8")
         # extract text from markdown (convert to html -> extract text)
         text = markdown_processor(markdown_content)
 
-    if file.content_type == "application/pdf":
-        content_bytes = await file.read()
+    if pdf:
+        content_bytes = file.file.read()
         text = pdf_processor(content_bytes)
 
+    # reargs engine
+    reargs_engine = ReargsEngine()
     # build the docmap
     reargs_engine.build_docmap(text)
     # generate similarities
@@ -108,9 +108,11 @@ async def post_similarities(file: UploadFile) -> ClusterResponse:
 # get clusters, post response
 # pass id with the paramaters - id of the clusters
 @app.post("/similarities/llm/{id}")
-async def post_similarities_llm(id: str, clusters: LLMRequest) -> LLMResponse:
+def post_similarities_llm(id: str, clusters: LLMRequest) -> LLMResponse:
+    # reargs llm
+    reargs_llm = ReargsLLM()
     # get clusters into the ReargsLLM
-    reargs_llm.get_clusters(clusters.clusters)
+    reargs_llm.get_clusters(clusters.model_dump().get("clusters"))
     # generate content
     reargs_llm.generate_content()
     # return the structured llm response
